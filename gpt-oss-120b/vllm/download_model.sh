@@ -7,6 +7,12 @@ set -e
 
 MODEL_NAME="openai/gpt-oss-120b"
 TMUX_SESSION="download-gpt-oss-120b"
+ENV_FILE="/root/shared-services-gpu/.env"
+
+# .env 파일에서 HF_TOKEN 로드
+if [ -f "$ENV_FILE" ]; then
+    export $(cat "$ENV_FILE" | grep -v '^#' | xargs)
+fi
 
 # huggingface_hub 패키지가 설치되어 있는지 확인
 if ! python3 -c "import huggingface_hub" &> /dev/null; then
@@ -29,10 +35,11 @@ tmux kill-session -t ${TMUX_SESSION} 2>/dev/null || true
 
 # tmux 세션에서 다운로드 실행
 tmux new-session -d -s ${TMUX_SESSION} "
+export HF_TOKEN='${HF_TOKEN}';
 echo '=== Downloading ${MODEL_NAME} (excluding original, metal folders) ===';
 echo 'Model will be cached in: ~/.cache/huggingface/hub';
 echo '';
-python3 -c \"from huggingface_hub import snapshot_download; snapshot_download('${MODEL_NAME}', ignore_patterns=['original/*', 'metal/*'])\";
+python3 -c \"import os; from huggingface_hub import snapshot_download; snapshot_download('${MODEL_NAME}', token=os.getenv('HF_TOKEN'), ignore_patterns=['original/*', 'metal/*'])\";
 echo '';
 echo '=== Download completed ===';
 echo 'Model cached at: ~/.cache/huggingface/hub';
