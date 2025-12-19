@@ -1,0 +1,8 @@
+FROM openai/gpt-oss-120b
+
+TEMPLATE """{{ if .System }}{{ .System }}
+{{ end }}{{ if .Prompt }}{{ .Prompt }}{{ end }}"""
+
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER top_k 40
