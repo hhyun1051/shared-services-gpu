@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# FunctionGemma-270M 모델 다운로드 스크립트
+# FunctionGemma-270M-IT 모델 다운로드 스크립트
 # HuggingFace 기본 캐시 경로 사용: ~/.cache/huggingface/hub
 
 set -e
 
 MODEL_NAME="google/functiongemma-270m-it"
-
-echo "=== Downloading ${MODEL_NAME} ==="
-echo "Model will be cached in: ~/.cache/huggingface/hub"
+TMUX_SESSION="download-functiongemma-270m"
 
 # huggingface_hub 패키지가 설치되어 있는지 확인
 if ! python3 -c "import huggingface_hub" &> /dev/null; then
@@ -16,8 +14,33 @@ if ! python3 -c "import huggingface_hub" &> /dev/null; then
     pip install -U huggingface_hub --break-system-packages
 fi
 
-# Python API를 사용하여 모델 다운로드
-python3 -c "from huggingface_hub import snapshot_download; snapshot_download('${MODEL_NAME}')"
+# tmux 설치 확인
+if ! command -v tmux &> /dev/null; then
+    echo "tmux not found. Installing..."
+    apt-get update && apt-get install -y tmux
+fi
 
-echo "=== Download completed ==="
-echo "Model cached at: ~/.cache/huggingface/hub"
+echo "=== Starting download in tmux session: ${TMUX_SESSION} ==="
+echo "To attach: tmux attach -t ${TMUX_SESSION}"
+echo "To detach: Ctrl+b then d"
+
+# 기존 세션이 있으면 종료
+tmux kill-session -t ${TMUX_SESSION} 2>/dev/null || true
+
+# tmux 세션에서 다운로드 실행
+tmux new-session -d -s ${TMUX_SESSION} "
+echo '=== Downloading ${MODEL_NAME} ===';
+echo 'Model will be cached in: ~/.cache/huggingface/hub';
+echo '';
+python3 -c \"from huggingface_hub import snapshot_download; snapshot_download('${MODEL_NAME}')\";
+echo '';
+echo '=== Download completed ===';
+echo 'Model cached at: ~/.cache/huggingface/hub';
+echo '';
+echo 'Press any key to close this tmux session...';
+read;
+"
+
+echo ""
+echo "Download started in background tmux session!"
+echo "To monitor progress: tmux attach -t ${TMUX_SESSION}"
