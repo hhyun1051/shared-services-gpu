@@ -45,7 +45,7 @@ shared-services-gpu/
 - **포트**: 8002
 - **모델**: `openai/gpt-oss-120b`
 - **설명**: 대규모 언어 모델
-- **GPU**: 2개 사용 (tensor-parallel)
+- **GPU**: 1개 사용 (DGX Spark 통합 메모리)
 
 ## 사용 방법
 
