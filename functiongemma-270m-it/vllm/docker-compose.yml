@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   functiongemma-270m-vllm:
-    image: vllm/vllm-openai:v0.13.0
+    image: nvcr.io/nvidia/vllm:25.11-py3
     container_name: functiongemma-270m-vllm
 
     runtime: nvidia
@@ -18,6 +18,9 @@ services:
       - "8002:8000"
 
     command: >
-      --model google/functiongemma-270m-it  --served-model-name functiongemma-270m  --max-model-len 8192  --gpu-memory-utilization 0.7
+      vllm serve google/functiongemma-270m-it
+      --served-model-name functiongemma-270m
+      --max-model-len 8192
+      --gpu-memory-utilization 0.7
 
     restart: unless-stopped

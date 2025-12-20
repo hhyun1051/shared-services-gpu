@@ -1,12 +1,12 @@
 version: "3.8"
 
 services:
-  kanana-2-30b-vllm:
+  functiongemma-270m-vllm:
     image: nvcr.io/nvidia/vllm:25.11-py3
-    container_name: kanana-2-30b-vllm
+    container_name: functiongemma-270m-vllm
 
     runtime: nvidia
-    shm_size: "8gb"
+    shm_size: "1gb"
 
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -18,10 +18,9 @@ services:
       - "8002:8000"
 
     command: >
-      vllm serve kakaocorp/kanana-2-30b-a3b-thinking
-      --served-model-name kanana-2-30b-a3b-thinking
-      --dtype bfloat16
+      google/functiongemma-270m-it
+      --served-model-name functiongemma-270m
       --max-model-len 8192
-      --gpu-memory-utilization 0.8
+      --gpu-memory-utilization 0.7
 
     restart: unless-stopped
