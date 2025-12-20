@@ -15,12 +15,9 @@ services:
       - /root/.cache/huggingface:/root/.cache/huggingface
 
     ports:
-      - "8004:8000"
+      - "8002:8000"
 
     command: >
-      --model google/functiongemma-270m-it
-      --served-model-name functiongemma-270m
-      --max-model-len 8192
-      --gpu-memory-utilization 0.7
+      --model google/functiongemma-270m-it  --served-model-name functiongemma-270m  --max-model-len 8192  --gpu-memory-utilization 0.7
 
     restart: unless-stopped

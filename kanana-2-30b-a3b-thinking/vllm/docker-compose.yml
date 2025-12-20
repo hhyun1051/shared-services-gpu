@@ -15,13 +15,9 @@ services:
       - /root/.cache/huggingface:/root/.cache/huggingface
 
     ports:
-      - "8003:8000"
+      - "8002:8000"
 
     command: >
-      --model kakaocorp/kanana-2-30b-a3b-thinking
-      --served-model-name kanana-2-30b
-      --dtype bfloat16
-      --max-model-len 8192
-      --gpu-memory-utilization 0.8
+      --model kakaocorp/kanana-2-30b-a3b-thinking --served-model-name kanana-2-30b --dtype bfloat16 --max-model-len 8192 --gpu-memory-utilization 0.8
 
     restart: unless-stopped
