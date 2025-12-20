@@ -1,27 +1,27 @@
-version: '3.8'
+version: "3.8"
 
 services:
   kanana-2-30b-vllm:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai:v0.13.0
     container_name: kanana-2-30b-vllm
+
     runtime: nvidia
+    shm_size: "8gb"
+
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-      - HF_HOME=/root/.cache/huggingface
+
     volumes:
-      - ~/.cache/huggingface:/root/.cache/huggingface
+      - /root/.cache/huggingface:/root/.cache/huggingface
+
     ports:
       - "8003:8000"
+
     command: >
       --model kakaocorp/kanana-2-30b-a3b-thinking
       --served-model-name kanana-2-30b
+      --dtype bfloat16
       --max-model-len 8192
-      --gpu-memory-utilization 0.9
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      --gpu-memory-utilization 0.8
+
     restart: unless-stopped

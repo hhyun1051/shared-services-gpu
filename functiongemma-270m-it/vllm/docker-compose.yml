@@ -1,27 +1,26 @@
-version: '3.8'
+version: "3.8"
 
 services:
   functiongemma-270m-vllm:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai:v0.13.0
     container_name: functiongemma-270m-vllm
+
     runtime: nvidia
+    shm_size: "1gb"
+
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-      - HF_HOME=/root/.cache/huggingface
+
     volumes:
-      - ~/.cache/huggingface:/root/.cache/huggingface
+      - /root/.cache/huggingface:/root/.cache/huggingface
+
     ports:
       - "8004:8000"
+
     command: >
       --model google/functiongemma-270m-it
       --served-model-name functiongemma-270m
       --max-model-len 8192
-      --gpu-memory-utilization 0.9
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      --gpu-memory-utilization 0.7
+
     restart: unless-stopped
