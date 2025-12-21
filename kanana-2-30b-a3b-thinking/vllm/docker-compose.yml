@@ -17,11 +17,17 @@ services:
     ports:
       - "8002:8000"
 
-    command: >
-      vllm serve kakaocorp/kanana-2-30b-a3b-thinking
-      --served-model-name kanana-2-30b-a3b-thinking
-      --dtype bfloat16
-      --max-model-len 8192
-      --gpu-memory-utilization 0.8
+    command:
+      - vllm
+      - serve
+      - kakaocorp/kanana-2-30b-a3b-thinking
+      - --served-model-name
+      - kanana-2-30b-a3b-thinking
+      - --dtype
+      - bfloat16
+      - --max-model-len
+      - "8192"
+      - --gpu-memory-utilization
+      - "0.8"
 
     restart: unless-stopped
