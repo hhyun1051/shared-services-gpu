@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  kanana-2-30b-instruct-vllm:
+    image: nvcr.io/nvidia/vllm:25.11-py3
+    container_name: kanana-2-30b-instruct-vllm
+
+    runtime: nvidia
+    shm_size: "8gb"
+
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+
+    volumes:
+      - /root/.cache/huggingface:/root/.cache/huggingface
+
+    ports:
+      - "8003:8000"
+
+    command:
+      - vllm
+      - serve
+      - kakaocorp/kanana-2-30b-a3b-instruct
+      - --served-model-name
+      - kanana-2-30b-a3b-instruct
+      - --dtype
+      - bfloat16
+      - --max-model-len
+      - "8192"
+      - --gpu-memory-utilization
+      - "0.8"
+      - --tool-call-parser
+      - hermes
+      - --enable-auto-tool-choice
+    restart: unless-stopped
